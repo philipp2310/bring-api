@@ -58,10 +58,10 @@ class BringApi:
                             'X-BRING-COUNTRY': 'de',
                             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
 
-    @staticmethod
-    def login(self, email, password):
-        params = {'email': email, 'password': password}
-        return requests.get(self.bringRestURL+"bringlists",params=params)
+    @classmethod
+    def login(email, password):
+        params = {cls, 'email': email, 'password': password}
+        return requests.get(cls.bringRestURL+"bringlists",params=params)
     
     #return list of items from current list as well as recent items
     def get_items(self):

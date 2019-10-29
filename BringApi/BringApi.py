@@ -29,15 +29,20 @@ class BringApi:
     bringUUID = ""
     bringListUUID = ""
 
+    class AuthentificationFailed(Exception):
+        pass
+
     def __init__(self, uuid, bringuuid, use_login = False):
         if use_login:
-            log = self.login(uuid,bringuuid)
-            if log.status_code == 200:
-                log = log.json()
-                self.bringUUID = log['uuid'];
-                self.bringListUUID = log['bringListUUID']
-            else:
-                print("Wrong Login!")
+            response = self.login(uuid, bringuuid)
+            response.raise_for_status()
+            
+            log = response.json()
+            self.bringUUID = log.get('uuid')
+            self.bringListUUID = log.get('bringListUUID')
+            if 'errorcode' in log or not self.bringUUID or not self.bringListUUID:
+                raise BringApi.AuthentificationFailed(log.get('message') or 'Wrong Login')
+
         else:
             self.bringUUID = uuid
             self.bringListUUID = bringuuid
@@ -53,6 +58,7 @@ class BringApi:
                             'X-BRING-COUNTRY': 'de',
                             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
 
+    @staticmethod
     def login(self, email, password):
         params = {'email': email, 'password': password}
         return requests.get(self.bringRestURL+"bringlists",params=params)

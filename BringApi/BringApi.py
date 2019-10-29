@@ -34,15 +34,7 @@ class BringApi:
 
     def __init__(self, uuid, bringuuid, use_login = False):
         if use_login:
-            try:
-                response = self.login(uuid, bringuuid)
-                response.raise_for_status()
-                login = response.json()
-                self.bringUUID = login['uuid']
-                self.bringListUUID = login['bringListUUID']
-            except (requests.RequestException, KeyError):
-                raise BringApi.AuthentificationFailed('email password combination not existing')
-
+            self.bringUUID, self.bringListUUID = self.login(uuid, bringuuid)
         else:
             self.bringUUID = uuid
             self.bringListUUID = bringuuid
@@ -60,8 +52,14 @@ class BringApi:
 
     @classmethod
     def login(cls, email, password):
-        params = {'email': email, 'password': password}
-        return requests.get(cls.bringRestURL+"bringlists",params=params)
+        try:
+            params = {'email': email, 'password': password}
+            response = requests.get(cls.bringRestURL+"bringlists",params=params)
+            response.raise_for_status()
+            login = response.json()
+            return login['uuid'], login['bringListUUID']
+        except (requests.RequestException, KeyError):
+            raise cls.AuthentificationFailed('email password combination not existing')
     
     #return list of items from current list as well as recent items
     def get_items(self):

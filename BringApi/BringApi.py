@@ -39,16 +39,16 @@ class BringApi:
 			self.bringUUID = uuid
 			self.bringListUUID = bringuuid
 		self.headers = {    'X-BRING-API-KEY': 'cof4Nc6D8saplXjE3h3HXqHH8m7VU2i1Gs0g85Sp',
-							'X-BRING-CLIENT': 'android',
-							'X-BRING-USER-UUID': self.bringUUID,
-							'X-BRING-VERSION': '303070050',
-							'X-BRING-COUNTRY': 'de' }
+		                    'X-BRING-CLIENT': 'android',
+		                    'X-BRING-USER-UUID': self.bringUUID,
+		                    'X-BRING-VERSION': '303070050',
+		                    'X-BRING-COUNTRY': 'de' }
 		self.addheaders = { 'X-BRING-API-KEY': 'cof4Nc6D8saplXjE3h3HXqHH8m7VU2i1Gs0g85Sp',
-							'X-BRING-CLIENT': 'android',
-							'X-BRING-USER-UUID': self.bringUUID,
-							'X-BRING-VERSION': '303070050',
-							'X-BRING-COUNTRY': 'de',
-							'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+		                    'X-BRING-CLIENT': 'android',
+		                    'X-BRING-USER-UUID': self.bringUUID,
+		                    'X-BRING-VERSION': '303070050',
+		                    'X-BRING-COUNTRY': 'de',
+		                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
 
 
 	@classmethod
@@ -63,9 +63,16 @@ class BringApi:
 			raise cls.AuthentificationFailed('email password combination not existing')
 
 
-	#return list of items from current list as well as recent items
-	def get_items(self):
-		return requests.get(f'{self.bringRestURL}bringlists/{self.bringListUUID}', headers=self.headers)
+	#return list of items from current list as well as recent items - translated if requested
+	def get_items(self, locale=None) -> dict:
+		items = requests.get(f'{self.bringRestURL}bringlists/{self.bringListUUID}', headers=self.headers).json()
+		transl = BringApi.loadTranslations(locale).json()
+		if locale:
+			for item in items['purchase']:
+				item['name'] = transl.get(item['name']) or item['name']
+			for item in items['recently']:
+				item['name'] = transl.get(item['name']) or item['name']
+		return items
 
 
 	#add a new item to the current list with a given specification = additional description

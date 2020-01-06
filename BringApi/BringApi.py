@@ -95,27 +95,27 @@ class BringApi:
 
 	#// Hidden Icons? Don't know what this is used for
 	def load_products(self):
-		return requests.get(self.bringRestURL+"bringproducts", headers=self.headers)
+		return requests.get(f'{self.bringRestURL}bringproducts', headers=self.headers)
 
 
 	#// Found Icons? Don't know what this is used for
 	def load_features(self):
-		return requests.get(self.bringRestURL+"bringusers/"+self.bringUUID+"/features", headers=self.headers)
+		return requests.get(f'{self.bringRestURL}bringusers/{self.bringUUID}/features', headers=self.headers)
 
 
 	#load all list infos
 	def load_lists(self):
-		return requests.get(self.bringRestURL+"bringusers/"+self.bringUUID+"/lists", headers=self.headers)
+		return requests.get(f'{self.bringRestURL}bringusers/{self.bringUUID}/lists', headers=self.headers)
 
 
 	#get list of all users in list ID
 	def get_users_from_list(self, listUUID):
-		return requests.get(self.bringRestURL+"bringlists/"+listUUID+"/users", headers=self.headers)
+		return requests.get(f'{self.bringRestURL}bringlists/{listUUID}/users', headers=self.headers)
 
 
 	#get settings from user
 	def get_user_settings(self):
-		return requests.get(self.bringRestURL+"bringusersettings/"+self.bringUUID, headers=self.headers)
+		return requests.get(f'{self.bringRestURL}bringusersettings/{self.bringUUID}', headers=self.headers)
 
 
 	#Load translation file e. g. via 'de-DE'

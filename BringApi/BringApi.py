@@ -2,7 +2,6 @@
 # coding: utf8
 
 import requests
-import json
 
 """
 This inofficial API is based on the reverse engineering by helvete003
